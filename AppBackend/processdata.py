@@ -71,7 +71,7 @@ def make_CCAA_cartodb_ID_dict():
         code,ID = line.strip().split(',')
         ID = int(ID)
         code = code.replace('ES-','')
-        CCAA_cartodb_ID_dict[ID] = CCAA_cartodb_ID_dict.get(ID,code)
+        CCAA_cartodb_ID_dict[code] = CCAA_cartodb_ID_dict.get(code,ID)
     return CCAA_cartodb_ID_dict
 
 # Function to download the csv data file from the webpage of the health ministry in
