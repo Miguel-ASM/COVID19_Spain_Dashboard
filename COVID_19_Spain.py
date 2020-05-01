@@ -1,8 +1,5 @@
 # Import Built in modules
 import json # JSON files utilities
-from urllib.request import urlretrieve # retrieve files from urls
-import os # operative system utilities
-import re # regular expressions
 
 # pandas and geopandas
 import pandas as pd
@@ -39,7 +36,7 @@ CCAA_cartodb_ID_dict = processdata.make_CCAA_cartodb_ID_dict()
 #
 # - data_COVID19_spain = data frame with all the data for spain
 # - data_COVID19_spain_last = data frame with the last update
-# - commcommunities_data_frames_dict = dictionary containing data frames for
+# - communities_data_frames_dict = dictionary containing data frames for
 #                                    every community. {'name':dataframe.}
 # - data_COVID19_spain_sum = data frame for the total data in Spain, i.e.,
 #                            summed over the communities.
@@ -78,6 +75,9 @@ data_COVID19_spain[activeCases_column_name] = data_COVID19_spain[cases_column_na
 # Data set with the last update
 data_COVID19_spain_last = pd.DataFrame(data_COVID19_spain[data_COVID19_spain[date_column_name]==max(data_COVID19_spain[date_column_name])])
 data_COVID19_spain_last.reset_index(drop=True,inplace=True)
+# add a colum for the cartodb_id
+data_COVID19_spain_last['cartodb_id'] = [CCAA_cartodb_ID_dict[code] for code in data_COVID19_spain_last['CCAA']]
+
 
 # Dictionary with a dataframe for everey comunidad autonoma
 communities_data_frames_dict = processdata.makeCommunitiesDataFrameDict(data_COVID19_spain)
@@ -94,6 +94,12 @@ data_COVID19_spain_sum = pd.DataFrame(
         activeCases_column_name: sum( df[activeCases_column_name] for df in communities_data_frames_dict.values() )
     }
 )
+
+# Load the geojson with the geometry of Spain CCAA
+with open('ign_spanish_adm1_ccaa_displaced_canary.json') as file:
+    mapGeoJSON_DATA = json.load(file)
+type(mapGeoJSON_DATA)
+
 ###################################################################################
 #
 #
