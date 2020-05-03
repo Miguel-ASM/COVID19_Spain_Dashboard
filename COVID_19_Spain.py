@@ -67,8 +67,8 @@ activeCases_column_name = 'Casos Activos'
 
 # Nota: El los datos de casos acumulados estan en la columna de PCR positiva para algunas CCAA
 # sumar las PCR a la columna de Acumulados
-data_COVID19_spain[cases_column_name] += data_COVID19_spain[PCR_column_name]
-
+cases_0value_mask = data_COVID19_spain[cases_column_name] == 0
+data_COVID19_spain.loc[cases_0value_mask,cases_column_name] = data_COVID19_spain.loc[cases_0value_mask,PCR_column_name]
 # Make a column for the ACTIVE cases
 data_COVID19_spain[activeCases_column_name] = data_COVID19_spain[cases_column_name] - data_COVID19_spain[deaths_column_name] - data_COVID19_spain[recovered_column_name]
 
@@ -291,7 +291,7 @@ def update_CCAA_figure(CCAA_name):
         go.Scatter(
             x=df[date_column_name], y=df[deaths_column_name],
             mode='none',
-            name = activeCases_column_name,
+            name = deaths_column_name,
             stackgroup='one' # define stack group
         )
     )
@@ -299,7 +299,7 @@ def update_CCAA_figure(CCAA_name):
         go.Scatter(
             x=df[date_column_name], y=df[recovered_column_name],
             mode='none',
-            name = activeCases_column_name,
+            name = recovered_column_name,
             stackgroup='one' # define stack group
         )
     )
